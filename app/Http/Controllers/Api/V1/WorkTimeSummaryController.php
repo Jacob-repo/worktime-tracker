@@ -3,25 +3,43 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\WorkTimeSummaryRequest;
 use App\Services\WorkTimeSummaryService;
+use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
 class WorkTimeSummaryController extends Controller
 {
-    public function __construct(private readonly WorkTimeSummaryService $service) {}
+    public function __construct(
+        private readonly WorkTimeSummaryService $summaryService
+    ) {}
 
-    public function day(WorkTimeSummaryRequest $request): JsonResponse
+    public function day(Request $request): JsonResponse
     {
-        $data = $this->service->getDailySummary($request->input('uuid'), $request->input('date'));
+        $request->validate([
+            'uuid' => ['required', 'uuid', 'exists:employees,uuid'],
+            'date' => ['required', 'date'],
+        ]);
 
-        return response()->json(['response' => $data]);
+        $summary = $this->summaryService->getDailySummary(
+            uuid: $request->input('uuid'),
+            date: $request->input('date')
+        );
+
+        return response()->json(['response' => $summary]);
     }
 
-    public function month(WorkTimeSummaryRequest $request): JsonResponse
+    public function month(Request $request): JsonResponse
     {
-        $data = $this->service->getMonthlySummary($request->input('uuid'), $request->input('date'));
+        $request->validate([
+            'uuid' => ['required', 'uuid', 'exists:employees,uuid'],
+            'date' => ['required', 'regex:/^\d{4}-\d{2}$/'], // format: YYYY-MM
+        ]);
 
-        return response()->json(['response' => $data]);
+        $summary = $this->summaryService->getMonthlySummary(
+            uuid: $request->input('uuid'),
+            date: $request->input('date')
+        );
+
+        return response()->json(['response' => $summary]);
     }
 }
