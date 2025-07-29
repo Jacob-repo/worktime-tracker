@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'monthly_hours' => 40,
-    'base_rate' => 20.0,
-    'overtime_rate_multiplier' => 2.0,
+    'normal_hours_monthly' => 40,
+    'hourly_rate' => 20,
+    'overtime_multiplier' => 2.0,
 ];

@@ -18,4 +18,9 @@ class Employee extends Model
             }
         });
     }
+
+    public function workTimes()
+    {
+        return $this->hasMany(WorkTime::class);
+    }
 }
